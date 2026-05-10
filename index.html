@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dot Variant Generator</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --sidebar-bg: #0a0a0a;
+      --fg: #e0e0e0;
+      --border: #333;
+      --accent: #eeeeee;
+      --font: 'IBM Plex Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--font); display: flex; min-height: 100vh; overflow-x: hidden; }
+    
+    /* Left Sidebar */
+    .sidebar { width: 60px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 10; }
+    .sidebar-top { flex: 1; }
+    .sidebar-bottom { display: flex; flex-direction: column; gap: 20px; }
+    .side-icon { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 10px; cursor: pointer; text-decoration: none; border: none; background: transparent; transition: color 0.2s; }
+    .side-icon svg { width: 20px; height: 20px; margin-bottom: 4px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .side-icon:hover { color: var(--fg); }
+    .side-icon.active { background: #eee; color: #000; padding: 8px 4px; border-radius: 8px; }
+
+    /* Main Area */
+    .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
+    .top-right-nav { position: absolute; top: 20px; right: 20px; }
+    .btn-domains { background: transparent; border: 1px solid transparent; color: #888; cursor: pointer; font-family: var(--font); font-size: 13px; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .btn-domains:hover { color: var(--fg); }
+    
+    .center-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 800px; margin: 0 auto; }
+    
+    /* Mascot */
+    .mascot { margin-bottom: 30px; }
+    .mascot svg { width: 100px; height: 100px; stroke: var(--fg); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    
+    /* Input Row */
+    .input-bar { display: flex; align-items: center; border: 1px solid var(--fg); border-radius: 13px; padding: 6px 14px; width: 100%; max-width: 600px; background: transparent; }
+    .input-bar svg { width: 16px; height: 16px; stroke: #888; fill: none; margin-right: 10px; }
+    .input-bar input { flex: 1; background: transparent; border: none; color: var(--fg); font-family: var(--font); font-size: 14px; outline: none; }
+    .input-bar input::placeholder { color: #555; }
+    .domain-select { background: transparent; color: #aaa; border: none; font-family: var(--font); font-size: 14px; outline: none; margin: 0 10px; cursor: pointer; }
+    .domain-select option { background: var(--bg); color: var(--fg); }
+    
+    /* Pills below input */
+    .pills-row { display: flex; gap: 10px; margin-top: 15px; }
+    .pill { display: flex; align-items: center; gap: 6px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 6px 13px; font-family: var(--font); font-size: 13px; color: #aaa; cursor: pointer; transition: all 0.2s; }
+    .pill:hover { background: #2a2a2a; color: var(--fg); }
+    .pill.generate-btn { background: #e8e8e8; color: #000; border-color: #e8e8e8; font-weight: bold; }
+    .pill.generate-btn:hover { background: #fff; }
+    .pill svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* Output Display */
+    .output-area { margin-top: 40px; text-align: center; height: 60px; }
+    .generated-email { font-size: 24px; font-weight: bold; letter-spacing: 1px; color: var(--accent); user-select: all; }
+    .status-msg { margin-top: 8px; font-size: 13px; color: #888; height: 15px; }
+
+    /* Footer */
+    .footer { text-align: center; padding: 20px; font-size: 10px; color: #444; }
+    
+    /* Modals & Panels */
+    .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; z-index: 99; justify-content: center; align-items: center; }
+    .panel { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; width: 400px; max-width: 90%; max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+    .panel h3 { font-size: 14px; margin-bottom: 10px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    .panel-close { background: transparent; color: #888; border: none; cursor: pointer; float: right; font-family: var(--font); }
+    .panel-close:hover { color: #fff; }
+
+    /* Domain List & Forms */
+    .item-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .item-list li { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 8px 13px; border-radius: 6px; font-size: 13px; border: 1px solid #222; }
+    .item-actions button { background: transparent; border: 1px solid #444; color: #aaa; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: 11px; margin-left: 5px; }
+    .item-actions button:hover { background: #222; color: #fff; }
+    .add-form { display: flex; gap: 10px; margin-top: 10px; }
+    .add-form input { flex: 1; background: #000; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 6px; font-family: var(--font); }
+    .add-form button { background: #222; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 8px 13px; cursor: pointer; }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <button class="side-icon active" onclick="manualSave()" title="Save Current to History">
+        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        save
+      </button>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="side-icon" onclick="openModal('history-modal')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        history
+      </button>
+      <button class="side-icon" onclick="openModal('domain-modal')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        settings
+      </button>
+      <div class="side-icon" onclick="alert('Dot Variant Generator.\nData is strictly stored in your browser\'s LocalStorage. Fully serverless!')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        about
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main class="main-content">
+    <div class="center-stage">
+      
+      <!-- Mascot (Inline SVG) -->
+      <div class="mascot">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7 .58 10a10.68 10.68 0 0 1-9 10 10.67 10.67 0 0 1-9-10c1-3-.82-9.42.58-10 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26z"></path>
+          <path d="M9 14h.01M15 14h.01M10 18s1.5 2 4 0"></path>
+        </svg>
+      </div>
+
+      <!-- Main Input Bar -->
+      <div class="input-bar">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <input type="text" id="local-part" placeholder="local part (without @)" onkeypress="handleEnter(event)">
+        <select id="domain-select" class="domain-select"></select>
+      </div>
+
+      <!-- Action Pills -->
+      <div class="pills-row">
+        <button class="pill generate-btn" onclick="generate()">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> generate
+        </button>
+        <button class="pill" onclick="copyResult()">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> copy
+        </button>
+      </div>
+
+      <!-- Result Output -->
+      <div class="output-area">
+        <div id="output-email" class="generated-email"></div>
+        <div id="status" class="status-msg">Ready.</div>
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      by continuing, you agree to terms and ethics of use
+    </footer>
+  </main>
+
+  <!-- Modals -->
+  <div id="domain-modal" class="overlay" onclick="closeModal(event, 'domain-modal')">
+    <div class="panel">
+      <button class="panel-close" onclick="closeModal(event, 'domain-modal', true)">[X]</button>
+      <h3>Domains</h3>
+      <ul id="domain-list" class="item-list"></ul>
+      <div class="add-form">
+        <input type="text" id="new-domain" placeholder="e.g. @gmail.com">
+        <button onclick="addDomain()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="history-modal" class="overlay" onclick="closeModal(event, 'history-modal')">
+    <div class="panel" style="width: 600px;">
+      <button class="panel-close" onclick="closeModal(event, 'history-modal', true)">[X]</button>
+      <h3>Generation History</h3>
+      <ul id="history-list" class="item-list"></ul>
+    </div>
+  </div>
+
+  <script>
+    // --- DATABASE ENGINE (Заменяет серверную Ruby логику) ---
+    const DB_KEY = 'dotVariantGenDB';
+    let appData = {
+      domains: ['@gmail.com'],
+      active_domain: '@gmail.com',
+      history:[],
+      used_patterns: {}
+    };
+    let lastGenerated = null;
+
+    function initDB() {
+      const stored = localStorage.getItem(DB_KEY);
+      if (stored) {
+        try { 
+          const parsed = JSON.parse(stored);
+          appData = { ...appData, ...parsed };
+        } catch(e) { console.error("DB Parse error", e); }
+      } else {
+        saveDB(); // Сохраняем начальное состояние
+      }
+      renderDomains();
+      renderHistory();
+    }
+
+    function saveDB() {
+      localStorage.setItem(DB_KEY, JSON.stringify(appData));
+    }
+
+    function saveToHistory(item) {
+      item.created_at = new Date().toISOString();
+      appData.history.unshift(item);
+      if (appData.history.length > 100) appData.history.length = 100; // Храним максимум 100 записей
+      saveDB();
+    }
+
+    // --- ФРОНТЕНД И ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ---
+    function renderDomains() {
+      const select = document.getElementById('domain-select');
+      const list = document.getElementById('domain-list');
+      select.innerHTML = '';
+      list.innerHTML = '';
+
+      appData.domains.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = d;
+        if (d === appData.active_domain) opt.selected = true;
+        select.appendChild(opt);
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span style="color: ${d === appData.active_domain ? '#fff' : '#888'}">
+            ${d} ${d === appData.active_domain ? '(active)' : ''}
+          </span>
+          <div class="item-actions">
+            ${d !== appData.active_domain ? `<button onclick="setActiveDomain('${d}')">Set Active</button>` : ''}
+            <button onclick="deleteDomain('${d}')">Del</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('history-list');
+      list.innerHTML = '';
+      if (appData.history.length === 0) {
+        list.innerHTML = '<li><span style="color:#666">No history yet.</span></li>';
+      }
+      appData.history.forEach(item => {
+        const li = document.createElement('li');
+        const date = new Date(item.created_at).toLocaleString();
+        li.innerHTML = `
+          <div>
+            <div style="color: var(--accent); font-weight: bold;">${item.email}</div>
+            <div style="font-size: 10px; color: #666;">${date} | Base: ${item.base_local}</div>
+          </div>
+          <div class="item-actions">
+            <button onclick="copyText('${item.email}')">Copy</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    // --- ЛОГИКА ГЕНЕРАЦИИ (Перенесенная из Ruby) ---
+    function generate() {
+      const input = document.getElementById('local-part').value.replace(/\./g, '').trim();
+      const domain = document.getElementById('domain-select').value;
+      const statusEl = document.getElementById('status');
+      
+      if (input.length < 2) {
+        statusEl.textContent = 'Error: Local part must be at least 2 characters (excluding dots).';
+        statusEl.style.color = '#ff5555';
+        return;
+      }
+      if (!domain.includes('.') || domain.length < 3) {
+        statusEl.textContent = 'Error: Invalid domain configuration.';
+        statusEl.style.color = '#ff5555';
+        return;
+      }
+
+      // Авто-сохранение предыдущего сгенерированного email
+      if (lastGenerated) saveToHistory(lastGenerated);
+
+      const key = `${input}|${domain}`;
+      if (!appData.used_patterns[key]) appData.used_patterns[key] =[];
+      const used = appData.used_patterns[key];
+      
+      const n_spots = input.length - 1;
+      
+      // Защита от слишком длинных строк
+      if (n_spots > 30) {
+        statusEl.textContent = 'Error: Local part too long.';
+        statusEl.style.color = '#ff5555';
+        return;
+      }
+
+      const max_patterns = Math.pow(2, n_spots);
+      if (used.length >= max_patterns) {
+        statusEl.textContent = 'Error: No more unique dot patterns available for this combination.';
+        statusEl.style.color = '#ff5555';
+        return;
+      }
+
+      let chosen_str = null;
+      if (max_patterns < 100000) {
+        // Детерминированный поиск для небольшого количества комбинаций
+        const available =[];
+        for (let i = 0; i < max_patterns; i++) {
+          const bin = i.toString(2).padStart(n_spots, '0');
+          if (!used.includes(bin)) available.push(bin);
+        }
+        chosen_str = available[Math.floor(Math.random() * available.length)];
+      } else {
+        // Вероятностный поиск для огромного числа комбинаций
+        for (let i = 0; i < 10000; i++) {
+          let candidate = '';
+          for (let s = 0; s < n_spots; s++) candidate += Math.floor(Math.random() * 2);
+          if (!used.includes(candidate)) {
+            chosen_str = candidate;
+            break;
+          }
+        }
+        if (!chosen_str) {
+          statusEl.textContent = 'Error: Failed to find a unique pattern rapidly.';
+          statusEl.style.color = '#ff5555';
+          return;
+        }
+      }
+
+      // Сохраняем паттерн как использованный
+      appData.used_patterns[key].push(chosen_str);
+      saveDB();
+
+      // Сборка финального email
+      let res_email = input[0];
+      for (let i = 0; i < n_spots; i++) {
+        if (chosen_str[i] === '1') res_email += '.';
+        res_email += input[i + 1];
+      }
+      res_email += domain;
+
+      // Обновление UI
+      document.getElementById('output-email').textContent = res_email;
+      
+      let msg = "Generated new unique pattern.";
+      if (lastGenerated) msg = "Saved previous email. " + msg;
+      statusEl.textContent = msg;
+      statusEl.style.color = '#AAAAAA';
+
+      if (appData.active_domain !== domain) setActiveDomain(domain, false); 
+      
+      lastGenerated = {
+        email: res_email,
+        base_local: input,
+        domain: domain,
+        pattern: chosen_str
+      };
+
+      renderHistory();
+    }
+
+    function manualSave() {
+      if (!lastGenerated) {
+        document.getElementById('status').textContent = "Nothing to save.";
+        document.getElementById('status').style.color = '#888';
+        return;
+      }
+      saveToHistory(lastGenerated);
+      document.getElementById('status').textContent = "Manually saved to history.";
+      document.getElementById('status').style.color = '#4caf50';
+      lastGenerated = null;
+      renderHistory();
+    }
+
+    function addDomain() {
+      let val = document.getElementById('new-domain').value.trim();
+      if (!val) return;
+      if (!val.startsWith('@')) val = '@' + val;
+      if (!val.includes('.')) { alert("Domain must contain a dot."); return; }
+      
+      if (!appData.domains.includes(val)) {
+        appData.domains.push(val);
+        if (appData.domains.length === 1) appData.active_domain = val;
+        saveDB();
+      }
+      document.getElementById('new-domain').value = '';
+      renderDomains();
+    }
+
+    function deleteDomain(d) {
+      if (!confirm(`Delete ${d}?`)) return;
+      appData.domains = appData.domains.filter(domain => domain !== d);
+      if (appData.active_domain === d) {
+        appData.active_domain = appData.domains[0] || '';
+      }
+      saveDB();
+      renderDomains();
+    }
+
+    function setActiveDomain(d, reload = true) {
+      if (appData.domains.includes(d)) {
+        appData.active_domain = d;
+        saveDB();
+      }
+      if (reload) renderDomains();
+    }
+
+    function copyResult() {
+      const txt = document.getElementById('output-email').textContent;
+      if (txt) copyText(txt, true);
+    }
+
+    function copyText(txt, isMain = false) {
+      navigator.clipboard.writeText(txt).then(() => {
+        if (isMain) {
+          const st = document.getElementById('status');
+          st.textContent = "Copied to clipboard!";
+          st.style.color = '#f89e24';
+        } else {
+          alert('Copied: ' + txt);
+        }
+      });
+    }
+
+    function handleEnter(e) {
+      if (e.key === 'Enter') generate();
+    }
+
+    // Поведение модальных окон
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(e, id, force = false) {
+      if (force || e.target.id === id) {
+        document.getElementById(id).style.display = 'none';
+      }
+    }
+
+    // Запуск приложения
+    window.onload = initDB;
+  </script>
+</body>
+</html>
