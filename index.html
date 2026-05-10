@@ -17,19 +17,13 @@
     body { background: var(--bg); color: var(--fg); font-family: var(--font); display: flex; min-height: 100vh; overflow-x: hidden; }
     
     /* Left Sidebar */
-    .sidebar { width: 60px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 10; }
-    .sidebar-top { flex: 1; }
-    .sidebar-bottom { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar { width: 60px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 20px 0; z-index: 10; }
     .side-icon { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 10px; cursor: pointer; text-decoration: none; border: none; background: transparent; transition: color 0.2s; }
     .side-icon svg { width: 20px; height: 20px; margin-bottom: 4px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .side-icon:hover { color: var(--fg); }
-    .side-icon.active { background: #eee; color: #000; padding: 8px 4px; border-radius: 8px; }
 
     /* Main Area */
     .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
-    .top-right-nav { position: absolute; top: 20px; right: 20px; }
-    .btn-domains { background: transparent; border: 1px solid transparent; color: #888; cursor: pointer; font-family: var(--font); font-size: 13px; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
-    .btn-domains:hover { color: var(--fg); }
     
     .center-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 800px; margin: 0 auto; }
     
@@ -39,7 +33,7 @@
     
     /* Input Row */
     .input-bar { display: flex; align-items: center; border: 1px solid var(--fg); border-radius: 13px; padding: 6px 14px; width: 100%; max-width: 600px; background: transparent; }
-    .input-bar svg { width: 16px; height: 16px; stroke: #888; fill: none; margin-right: 10px; }
+    .input-bar svg { width: 16px; height: 16px; stroke: #888; fill: none; margin-right: 10px; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
     .input-bar input { flex: 1; background: transparent; border: none; color: var(--fg); font-family: var(--font); font-size: 14px; outline: none; }
     .input-bar input::placeholder { color: #555; }
     .domain-select { background: transparent; color: #aaa; border: none; font-family: var(--font); font-size: 14px; outline: none; margin: 0 10px; cursor: pointer; }
@@ -63,19 +57,28 @@
     
     /* Modals & Panels */
     .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; z-index: 99; justify-content: center; align-items: center; }
-    .panel { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; width: 400px; max-width: 90%; max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-    .panel h3 { font-size: 14px; margin-bottom: 10px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; }
-    .panel-close { background: transparent; color: #888; border: none; cursor: pointer; float: right; font-family: var(--font); }
+    .panel { position: relative; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; width: 400px; max-width: 90%; max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+    .panel h3 { font-size: 14px; margin-bottom: 5px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; padding-right: 24px; }
+    .panel-close { position: absolute; top: 15px; right: 15px; background: transparent; color: #888; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 2px; transition: color 0.2s; }
     .panel-close:hover { color: #fff; }
+    .panel-close svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
     /* Domain List & Forms */
     .item-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .item-list li { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 8px 13px; border-radius: 6px; font-size: 13px; border: 1px solid #222; }
-    .item-actions button { background: transparent; border: 1px solid #444; color: #aaa; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: 11px; margin-left: 5px; }
+    .item-actions button { background: transparent; border: 1px solid #444; color: #aaa; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: 11px; margin-left: 5px; transition: background 0.2s; }
     .item-actions button:hover { background: #222; color: #fff; }
+    .item-actions .btn-del:hover { background: #551111; color: #ff5555; border-color: #772222; }
     .add-form { display: flex; gap: 10px; margin-top: 10px; }
     .add-form input { flex: 1; background: #000; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 6px; font-family: var(--font); }
-    .add-form button { background: #222; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 8px 13px; cursor: pointer; }
+    .add-form button { background: #222; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 8px 13px; cursor: pointer; transition: background 0.2s; }
+    .add-form button:hover { background: #333; }
+
+    /* Global Reset Section */
+    .danger-zone { margin-top: 10px; border-top: 1px dashed #333; padding-top: 20px; }
+    .btn-danger { background: rgba(255, 85, 85, 0.05); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.2); border-radius: 6px; padding: 10px; cursor: pointer; font-family: var(--font); font-size: 13px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+    .btn-danger:hover { background: #ff5555; color: #fff; border-color: #ff5555; }
+    .btn-danger svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
     
     /* Scrollbar */
     ::-webkit-scrollbar { width: 8px; }
@@ -87,25 +90,17 @@
 
   <!-- LEFT SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-top">
-      <button class="side-icon active" onclick="manualSave()" title="Save Current to History">
-        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-        save
-      </button>
-    </div>
-    <div class="sidebar-bottom">
-      <button class="side-icon" onclick="openModal('history-modal')">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        history
-      </button>
-      <button class="side-icon" onclick="openModal('domain-modal')">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        settings
-      </button>
-      <div class="side-icon" onclick="alert('Dot Variant Generator.\nData is strictly stored in your browser\'s LocalStorage. Fully serverless!')">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-        about
-      </div>
+    <button class="side-icon" onclick="openModal('history-modal')" title="History">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      history
+    </button>
+    <button class="side-icon" onclick="openModal('domain-modal')" title="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      settings
+    </button>
+    <div class="side-icon" onclick="alert('Dot Variant Generator.\nData is strictly stored in your browser\'s LocalStorage. Fully serverless!')" title="About">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      about
     </div>
   </aside>
 
@@ -113,7 +108,7 @@
   <main class="main-content">
     <div class="center-stage">
       
-      <!-- Mascot (Inline SVG) -->
+      <!-- Mascot -->
       <div class="mascot">
         <svg viewBox="0 0 24 24">
           <path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7 .58 10a10.68 10.68 0 0 1-9 10 10.67 10.67 0 0 1-9-10c1-3-.82-9.42.58-10 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26z"></path>
@@ -123,7 +118,7 @@
 
       <!-- Main Input Bar -->
       <div class="input-bar">
-        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
         <input type="text" id="local-part" placeholder="local part (without @)" onkeypress="handleEnter(event)">
         <select id="domain-select" class="domain-select"></select>
       </div>
@@ -154,31 +149,42 @@
   <!-- Modals -->
   <div id="domain-modal" class="overlay" onclick="closeModal(event, 'domain-modal')">
     <div class="panel">
-      <button class="panel-close" onclick="closeModal(event, 'domain-modal', true)">[X]</button>
-      <h3>Domains</h3>
+      <button class="panel-close" onclick="closeModal(event, 'domain-modal', true)">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <h3>Domains & Settings</h3>
       <ul id="domain-list" class="item-list"></ul>
       <div class="add-form">
         <input type="text" id="new-domain" placeholder="e.g. @gmail.com">
         <button onclick="addDomain()">Add</button>
+      </div>
+      
+      <div class="danger-zone">
+        <button class="btn-danger" onclick="resetSystem()">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          Global Reset Data
+        </button>
       </div>
     </div>
   </div>
 
   <div id="history-modal" class="overlay" onclick="closeModal(event, 'history-modal')">
     <div class="panel" style="width: 600px;">
-      <button class="panel-close" onclick="closeModal(event, 'history-modal', true)">[X]</button>
+      <button class="panel-close" onclick="closeModal(event, 'history-modal', true)">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
       <h3>Generation History</h3>
       <ul id="history-list" class="item-list"></ul>
     </div>
   </div>
 
   <script>
-    // --- DATABASE ENGINE (Заменяет серверную Ruby логику) ---
+    // --- Database Engine (Handles LocalStorage persistence) ---
     const DB_KEY = 'dotVariantGenDB';
     let appData = {
       domains: ['@gmail.com'],
       active_domain: '@gmail.com',
-      history:[],
+      history: [],
       used_patterns: {}
     };
     let lastGenerated = null;
@@ -191,7 +197,7 @@
           appData = { ...appData, ...parsed };
         } catch(e) { console.error("DB Parse error", e); }
       } else {
-        saveDB(); // Сохраняем начальное состояние
+        saveDB(); // Save initial state
       }
       renderDomains();
       renderHistory();
@@ -204,11 +210,11 @@
     function saveToHistory(item) {
       item.created_at = new Date().toISOString();
       appData.history.unshift(item);
-      if (appData.history.length > 100) appData.history.length = 100; // Храним максимум 100 записей
+      if (appData.history.length > 100) appData.history.length = 100; // Keep a maximum of 100 history records
       saveDB();
     }
 
-    // --- ФРОНТЕНД И ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ---
+    // --- Frontend & UI Updates ---
     function renderDomains() {
       const select = document.getElementById('domain-select');
       const list = document.getElementById('domain-list');
@@ -229,7 +235,7 @@
           </span>
           <div class="item-actions">
             ${d !== appData.active_domain ? `<button onclick="setActiveDomain('${d}')">Set Active</button>` : ''}
-            <button onclick="deleteDomain('${d}')">Del</button>
+            <button class="btn-del" onclick="deleteDomain('${d}')">Del</button>
           </div>
         `;
         list.appendChild(li);
@@ -242,7 +248,7 @@
       if (appData.history.length === 0) {
         list.innerHTML = '<li><span style="color:#666">No history yet.</span></li>';
       }
-      appData.history.forEach(item => {
+      appData.history.forEach((item, index) => {
         const li = document.createElement('li');
         const date = new Date(item.created_at).toLocaleString();
         li.innerHTML = `
@@ -252,13 +258,14 @@
           </div>
           <div class="item-actions">
             <button onclick="copyText('${item.email}')">Copy</button>
+            <button class="btn-del" onclick="deleteHistoryItem(${index})">Del</button>
           </div>
         `;
         list.appendChild(li);
       });
     }
 
-    // --- ЛОГИКА ГЕНЕРАЦИИ (Перенесенная из Ruby) ---
+    // --- Core Generation Logic ---
     function generate() {
       const input = document.getElementById('local-part').value.replace(/\./g, '').trim();
       const domain = document.getElementById('domain-select').value;
@@ -275,16 +282,16 @@
         return;
       }
 
-      // Авто-сохранение предыдущего сгенерированного email
+      // Auto-save the previously generated email before generating a new one
       if (lastGenerated) saveToHistory(lastGenerated);
 
       const key = `${input}|${domain}`;
-      if (!appData.used_patterns[key]) appData.used_patterns[key] =[];
+      if (!appData.used_patterns[key]) appData.used_patterns[key] = [];
       const used = appData.used_patterns[key];
       
       const n_spots = input.length - 1;
       
-      // Защита от слишком длинных строк
+      // Prevent excessively long strings
       if (n_spots > 30) {
         statusEl.textContent = 'Error: Local part too long.';
         statusEl.style.color = '#ff5555';
@@ -300,15 +307,15 @@
 
       let chosen_str = null;
       if (max_patterns < 100000) {
-        // Детерминированный поиск для небольшого количества комбинаций
-        const available =[];
+        // Deterministic search for smaller combinations
+        const available = [];
         for (let i = 0; i < max_patterns; i++) {
           const bin = i.toString(2).padStart(n_spots, '0');
           if (!used.includes(bin)) available.push(bin);
         }
         chosen_str = available[Math.floor(Math.random() * available.length)];
       } else {
-        // Вероятностный поиск для огромного числа комбинаций
+        // Probabilistic search for larger combination spaces to maintain performance
         for (let i = 0; i < 10000; i++) {
           let candidate = '';
           for (let s = 0; s < n_spots; s++) candidate += Math.floor(Math.random() * 2);
@@ -324,11 +331,11 @@
         }
       }
 
-      // Сохраняем паттерн как использованный
+      // Mark pattern as used
       appData.used_patterns[key].push(chosen_str);
       saveDB();
 
-      // Сборка финального email
+      // Assemble the final email string
       let res_email = input[0];
       for (let i = 0; i < n_spots; i++) {
         if (chosen_str[i] === '1') res_email += '.';
@@ -336,11 +343,11 @@
       }
       res_email += domain;
 
-      // Обновление UI
+      // Update the UI
       document.getElementById('output-email').textContent = res_email;
       
       let msg = "Generated new unique pattern.";
-      if (lastGenerated) msg = "Saved previous email. " + msg;
+      if (lastGenerated) msg = "Auto-saved previous email. " + msg;
       statusEl.textContent = msg;
       statusEl.style.color = '#AAAAAA';
 
@@ -356,17 +363,23 @@
       renderHistory();
     }
 
-    function manualSave() {
-      if (!lastGenerated) {
-        document.getElementById('status').textContent = "Nothing to save.";
-        document.getElementById('status').style.color = '#888';
-        return;
-      }
-      saveToHistory(lastGenerated);
-      document.getElementById('status').textContent = "Manually saved to history.";
-      document.getElementById('status').style.color = '#4caf50';
-      lastGenerated = null;
+    // Capture the very last generation if user closes tab
+    window.addEventListener('beforeunload', () => {
+      if (lastGenerated) saveToHistory(lastGenerated);
+    });
+
+    // --- History & Data Management ---
+    function deleteHistoryItem(index) {
+      appData.history.splice(index, 1);
+      saveDB();
       renderHistory();
+    }
+
+    function resetSystem() {
+      if (confirm("Are you sure? This will permanently delete all domains, history, and generated patterns.")) {
+        localStorage.removeItem(DB_KEY);
+        location.reload();
+      }
     }
 
     function addDomain() {
@@ -423,7 +436,7 @@
       if (e.key === 'Enter') generate();
     }
 
-    // Поведение модальных окон
+    // Modal behavior
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(e, id, force = false) {
       if (force || e.target.id === id) {
@@ -431,7 +444,7 @@
       }
     }
 
-    // Запуск приложения
+    // App Initialization
     window.onload = initDB;
   </script>
 </body>
