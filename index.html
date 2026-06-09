@@ -14,8 +14,8 @@
       --font: 'IBM Plex Mono', monospace;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--fg); font-family: var(--font); display: flex; min-height: 100vh; overflow-x: hidden; }
-    
+    body { background: radial-gradient(circle at top, #111, var(--bg)); color: var(--fg); font-family: var(--font); display: flex; min-height: 100vh; overflow-x: hidden; }
+
     /* Left Sidebar */
     .sidebar { width: 60px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 20px 0; z-index: 10; }
     .side-icon { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 10px; cursor: pointer; text-decoration: none; border: none; background: transparent; transition: color 0.2s; }
@@ -24,13 +24,14 @@
 
     /* Main Area */
     .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
-    
+
     .center-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 800px; margin: 0 auto; }
-    
+
     /* Mascot */
-    .mascot { margin-bottom: 30px; }
+    .mascot { margin-bottom: 30px; animation: floatMascot 4s ease-in-out infinite; }
+    @keyframes floatMascot { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
     .mascot svg { width: 100px; height: 100px; stroke: var(--fg); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    
+
     /* Input Row */
     .input-bar { display: flex; align-items: center; border: 1px solid var(--fg); border-radius: 13px; padding: 6px 14px; width: 100%; max-width: 600px; background: transparent; }
     .input-bar svg { width: 16px; height: 16px; stroke: #888; fill: none; margin-right: 10px; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
@@ -38,13 +39,13 @@
     .input-bar input::placeholder { color: #555; }
     .domain-select { background: transparent; color: #aaa; border: none; font-family: var(--font); font-size: 14px; outline: none; margin: 0 10px; cursor: pointer; }
     .domain-select option { background: var(--bg); color: var(--fg); }
-    
+
     /* Pills below input */
     .pills-row { display: flex; gap: 10px; margin-top: 15px; }
     .pill { display: flex; align-items: center; gap: 6px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 6px 13px; font-family: var(--font); font-size: 13px; color: #aaa; cursor: pointer; transition: all 0.2s; }
-    .pill:hover { background: #2a2a2a; color: var(--fg); }
+    .pill:hover { background: #2a2a2a; color: var(--fg); transform: scale(1.02); }
     .pill.generate-btn { background: #e8e8e8; color: #000; border-color: #e8e8e8; font-weight: bold; }
-    .pill.generate-btn:hover { background: #fff; }
+    .pill.generate-btn:hover { background: #fff; transform: scale(1.03); }
     .pill svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
 
     /* Output Display */
@@ -54,10 +55,11 @@
 
     /* Footer */
     .footer { text-align: center; padding: 20px; font-size: 10px; color: #444; }
-    
+
     /* Modals & Panels */
     .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; z-index: 99; justify-content: center; align-items: center; }
-    .panel { position: relative; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; width: 400px; max-width: 90%; max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+    @keyframes modalPop { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+    .panel { position: relative; animation: modalPop 0.2s ease-out; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; width: 400px; max-width: 90%; max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
     .panel h3 { font-size: 14px; margin-bottom: 5px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; padding-right: 24px; }
     .panel-close { position: absolute; top: 15px; right: 15px; background: transparent; color: #888; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 2px; transition: color 0.2s; }
     .panel-close:hover { color: #fff; }
@@ -79,7 +81,7 @@
     .btn-danger { background: rgba(255, 85, 85, 0.05); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.2); border-radius: 6px; padding: 10px; cursor: pointer; font-family: var(--font); font-size: 13px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
     .btn-danger:hover { background: #ff5555; color: #fff; border-color: #ff5555; }
     .btn-danger svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
-    
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
@@ -90,24 +92,28 @@
 
   <!-- LEFT SIDEBAR -->
   <aside class="sidebar">
-    <button class="side-icon" onclick="openModal('history-modal')" title="History">
+    <button class="side-icon" onclick="openModal('history-modal')" title="History" data-i18n-title="history">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-      history
+      <span data-i18n="history">history</span>
     </button>
-    <button class="side-icon" onclick="openModal('domain-modal')" title="Settings">
+    <button class="side-icon" onclick="openModal('domain-modal')" title="Settings" data-i18n-title="settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      settings
+      <span data-i18n="settings">settings</span>
     </button>
-    <div class="side-icon" onclick="alert('Dot Variant Generator.\nData is strictly stored in your browser\'s LocalStorage. Fully serverless!')" title="About">
+    <button class="side-icon" onclick="alertAbout()" title="About" data-i18n-title="about">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-      about
-    </div>
+      <span data-i18n="about">about</span>
+    </button>
+    <button class="side-icon" id="lang-toggle" onclick="toggleLanguage()" title="Language">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      <span id="lang-label">EN</span>
+    </button>
   </aside>
 
   <!-- MAIN AREA -->
   <main class="main-content">
     <div class="center-stage">
-      
+
       <!-- Mascot -->
       <div class="mascot">
         <svg viewBox="0 0 24 24">
@@ -119,30 +125,30 @@
       <!-- Main Input Bar -->
       <div class="input-bar">
         <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-        <input type="text" id="local-part" placeholder="local part (without @)" onkeypress="handleEnter(event)">
+        <input type="text" id="local-part" placeholder="local part (without @)" data-i18n-placeholder="local_part_placeholder" onkeypress="handleEnter(event)">
         <select id="domain-select" class="domain-select"></select>
       </div>
 
       <!-- Action Pills -->
       <div class="pills-row">
         <button class="pill generate-btn" onclick="generate()">
-          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> generate
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> <span data-i18n="generate">generate</span>
         </button>
         <button class="pill" onclick="copyResult()">
-          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> copy
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> <span data-i18n="copy">copy</span>
         </button>
       </div>
 
       <!-- Result Output -->
       <div class="output-area">
         <div id="output-email" class="generated-email"></div>
-        <div id="status" class="status-msg">Ready.</div>
+        <div id="status" class="status-msg" data-i18n="ready">Ready.</div>
       </div>
 
     </div>
 
     <footer class="footer">
-      by continuing, you agree to terms and ethics of use
+      <span data-i18n="footer_terms">by continuing, you agree to terms and ethics of use</span>
     </footer>
   </main>
 
@@ -152,17 +158,17 @@
       <button class="panel-close" onclick="closeModal(event, 'domain-modal', true)">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
-      <h3>Domains & Settings</h3>
+      <h3 data-i18n="domains_settings_title">Domains & Settings</h3>
       <ul id="domain-list" class="item-list"></ul>
       <div class="add-form">
-        <input type="text" id="new-domain" placeholder="e.g. @gmail.com">
-        <button onclick="addDomain()">Add</button>
+        <input type="text" id="new-domain" placeholder="e.g. @gmail.com" data-i18n-placeholder="domain_placeholder">
+        <button onclick="addDomain()" data-i18n="add_btn">Add</button>
       </div>
-      
+
       <div class="danger-zone">
         <button class="btn-danger" onclick="resetSystem()">
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          Global Reset Data
+          <span data-i18n="global_reset_btn">Global Reset Data</span>
         </button>
       </div>
     </div>
@@ -173,26 +179,132 @@
       <button class="panel-close" onclick="closeModal(event, 'history-modal', true)">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
-      <h3>Generation History</h3>
+      <h3 data-i18n="history_title">Generation History</h3>
       <ul id="history-list" class="item-list"></ul>
     </div>
   </div>
 
   <script>
+const translations = {
+en: {
+    history: "history",
+    settings: "settings",
+    about: "about",
+    local_part_placeholder: "local part (without @)",
+    generate: "generate",
+    copy: "copy",
+    ready: "ready.",
+    footer_terms: "by continuing, you agree to terms and ethics of use",
+    domains_settings_title: "domains & settings",
+    domain_placeholder: "e.g. @gmail.com",
+    add_btn: "add",
+    global_reset_btn: "global reset data",
+    history_title: "generation history",
+    no_history: "no history yet.",
+    active_label: "(active)",
+    set_active_btn: "set active",
+    del_btn: "del",
+    copy_btn: "copy",
+    base_label: "base",
+    error_min_chars: "error: local part must be at least 2 characters (excluding dots).",
+    error_invalid_domain: "error: invalid domain configuration.",
+    error_too_long: "error: local part too long.",
+    error_no_patterns: "error: no more unique dot patterns available for this combination.",
+    error_failed_rapid: "error: failed to find a unique pattern rapidly.",
+    msg_generated_new: "generated new unique pattern.",
+    msg_auto_saved: "auto-saved previous email.",
+    confirm_reset: "are you sure? this will permanently delete all domains, history, and generated patterns.",
+    alert_domain_dot: "domain must contain a dot.",
+    confirm_delete: "delete {domain}?",
+    msg_copied_clipboard: "copied to clipboard!",
+    alert_copied: "copied: {text}",
+    alert_about: "dot variant generator.\ndata is strictly stored in your browser's localstorage. fully serverless!"
+  },
+  ru: {
+    history: "история",
+    settings: "настройки",
+    about: "о приложении",
+    local_part_placeholder: "имя ящика (без @)",
+    generate: "сгенерировать",
+    copy: "копировать",
+    ready: "готов.",
+    footer_terms: "продолжая, вы соглашаетесь с условиями и этикой использования",
+    domains_settings_title: "домены и настройки",
+    domain_placeholder: "напр. @gmail.com",
+    add_btn: "добавить",
+    global_reset_btn: "сбросить все данные",
+    history_title: "история генераций",
+    no_history: "история пока пуста.",
+    active_label: "(активен)",
+    set_active_btn: "сделать активным",
+    del_btn: "удалить",
+    copy_btn: "копир.",
+    base_label: "база",
+    error_min_chars: "ошибка: имя ящика должно содержать минимум 2 символа (без точек).",
+    error_invalid_domain: "ошибка: неверная конфигурация домена.",
+    error_too_long: "ошибка: имя ящика слишком длинное.",
+    error_no_patterns: "ошибка: для этой комбинации больше нет уникальных вариантов.",
+    error_failed_rapid: "ошибка: не удалось быстро найти уникальный вариант.",
+    msg_generated_new: "сгенерирован новый уникальный вариант.",
+    msg_auto_saved: "предыдущий email автосохранен.",
+    confirm_reset: "вы уверены? это навсегда удалит все домены, историю и сгенерированные варианты.",
+    alert_domain_dot: "домен должен содержать точку.",
+    confirm_delete: "удалить {domain}?",
+    msg_copied_clipboard: "скопировано в буфер обмена!",
+    alert_copied: "скопировано: {text}",
+    alert_about: "генератор вариантов с точками.\nданные хранятся строго в localstorage вашего браузера. полностью без сервера!"
+  }
+};
+
     // --- Database Engine (Handles LocalStorage persistence) ---
     const DB_KEY = 'dotVariantGenDB';
     let appData = {
       domains: ['@gmail.com'],
       active_domain: '@gmail.com',
       history: [],
-      used_patterns: {}
+      used_patterns: {},
+      lang: 'en'
     };
     let lastGenerated = null;
+
+
+    function getTranslation(key) {
+      return translations[appData.lang][key] || key;
+    }
+
+    function updateUIForLanguage() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = getTranslation(key);
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        el.title = getTranslation(key);
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        el.placeholder = getTranslation(key);
+      });
+      document.getElementById('lang-label').textContent = appData.lang.toUpperCase();
+    }
+
+    function toggleLanguage() {
+      appData.lang = appData.lang === 'en' ? 'ru' : 'en';
+      saveDB();
+      updateUIForLanguage();
+      renderDomains();
+      renderHistory();
+      updateUIForLanguage();
+    }
+
+    function alertAbout() {
+      alert(getTranslation('alert_about'));
+    }
 
     function initDB() {
       const stored = localStorage.getItem(DB_KEY);
       if (stored) {
-        try { 
+        try {
           const parsed = JSON.parse(stored);
           appData = { ...appData, ...parsed };
         } catch(e) { console.error("DB Parse error", e); }
@@ -201,6 +313,7 @@
       }
       renderDomains();
       renderHistory();
+      updateUIForLanguage();
     }
 
     function saveDB() {
@@ -231,11 +344,11 @@
         const li = document.createElement('li');
         li.innerHTML = `
           <span style="color: ${d === appData.active_domain ? '#fff' : '#888'}">
-            ${d} ${d === appData.active_domain ? '(active)' : ''}
+            ${d} ${d === appData.active_domain ? getTranslation("active_label") : ""}
           </span>
           <div class="item-actions">
-            ${d !== appData.active_domain ? `<button onclick="setActiveDomain('${d}')">Set Active</button>` : ''}
-            <button class="btn-del" onclick="deleteDomain('${d}')">Del</button>
+            ${d !== appData.active_domain ? `<button onclick="setActiveDomain(\'${d}\')">${getTranslation("set_active_btn")}</button>` : ''}
+            <button class="btn-del" onclick="deleteDomain(\'${d}\')">${getTranslation("del_btn")}</button>
           </div>
         `;
         list.appendChild(li);
@@ -246,7 +359,7 @@
       const list = document.getElementById('history-list');
       list.innerHTML = '';
       if (appData.history.length === 0) {
-        list.innerHTML = '<li><span style="color:#666">No history yet.</span></li>';
+        list.innerHTML = `<li><span style="color:#666">${getTranslation("no_history")}</span></li>`;
       }
       appData.history.forEach((item, index) => {
         const li = document.createElement('li');
@@ -254,11 +367,11 @@
         li.innerHTML = `
           <div>
             <div style="color: var(--accent); font-weight: bold;">${item.email}</div>
-            <div style="font-size: 10px; color: #666;">${date} | Base: ${item.base_local}</div>
+            <div style="font-size: 10px; color: #666;">${date} | ${getTranslation("base_label")}: ${item.base_local}</div>
           </div>
           <div class="item-actions">
-            <button onclick="copyText('${item.email}')">Copy</button>
-            <button class="btn-del" onclick="deleteHistoryItem(${index})">Del</button>
+            <button onclick="copyText(\'${item.email}\')">${getTranslation("copy_btn")}</button>
+            <button class="btn-del" onclick="deleteHistoryItem(${index})">${getTranslation("del_btn")}</button>
           </div>
         `;
         list.appendChild(li);
@@ -270,14 +383,14 @@
       const input = document.getElementById('local-part').value.replace(/\./g, '').trim();
       const domain = document.getElementById('domain-select').value;
       const statusEl = document.getElementById('status');
-      
+
       if (input.length < 2) {
-        statusEl.textContent = 'Error: Local part must be at least 2 characters (excluding dots).';
+        statusEl.textContent = getTranslation('error_min_chars');
         statusEl.style.color = '#ff5555';
         return;
       }
       if (!domain.includes('.') || domain.length < 3) {
-        statusEl.textContent = 'Error: Invalid domain configuration.';
+        statusEl.textContent = getTranslation('error_invalid_domain');
         statusEl.style.color = '#ff5555';
         return;
       }
@@ -288,19 +401,19 @@
       const key = `${input}|${domain}`;
       if (!appData.used_patterns[key]) appData.used_patterns[key] = [];
       const used = appData.used_patterns[key];
-      
+
       const n_spots = input.length - 1;
-      
+
       // Prevent excessively long strings
       if (n_spots > 30) {
-        statusEl.textContent = 'Error: Local part too long.';
+        statusEl.textContent = getTranslation('error_too_long');
         statusEl.style.color = '#ff5555';
         return;
       }
 
       const max_patterns = Math.pow(2, n_spots);
       if (used.length >= max_patterns) {
-        statusEl.textContent = 'Error: No more unique dot patterns available for this combination.';
+        statusEl.textContent = getTranslation('error_no_patterns');
         statusEl.style.color = '#ff5555';
         return;
       }
@@ -325,7 +438,7 @@
           }
         }
         if (!chosen_str) {
-          statusEl.textContent = 'Error: Failed to find a unique pattern rapidly.';
+          statusEl.textContent = getTranslation('error_failed_rapid');
           statusEl.style.color = '#ff5555';
           return;
         }
@@ -345,14 +458,14 @@
 
       // Update the UI
       document.getElementById('output-email').textContent = res_email;
-      
-      let msg = "Generated new unique pattern.";
-      if (lastGenerated) msg = "Auto-saved previous email. " + msg;
+
+      let msg = getTranslation("msg_generated_new");
+      if (lastGenerated) msg = getTranslation("msg_auto_saved") + " " + msg;
       statusEl.textContent = msg;
       statusEl.style.color = '#AAAAAA';
 
-      if (appData.active_domain !== domain) setActiveDomain(domain, false); 
-      
+      if (appData.active_domain !== domain) setActiveDomain(domain, false);
+
       lastGenerated = {
         email: res_email,
         base_local: input,
@@ -376,7 +489,7 @@
     }
 
     function resetSystem() {
-      if (confirm("Are you sure? This will permanently delete all domains, history, and generated patterns.")) {
+      if (confirm(getTranslation("confirm_reset"))) {
         localStorage.removeItem(DB_KEY);
         location.reload();
       }
@@ -386,8 +499,8 @@
       let val = document.getElementById('new-domain').value.trim();
       if (!val) return;
       if (!val.startsWith('@')) val = '@' + val;
-      if (!val.includes('.')) { alert("Domain must contain a dot."); return; }
-      
+      if (!val.includes('.')) { alert(getTranslation("alert_domain_dot")); return; }
+
       if (!appData.domains.includes(val)) {
         appData.domains.push(val);
         if (appData.domains.length === 1) appData.active_domain = val;
@@ -398,7 +511,7 @@
     }
 
     function deleteDomain(d) {
-      if (!confirm(`Delete ${d}?`)) return;
+      if (!confirm(getTranslation("confirm_delete").replace("{domain}", d))) return;
       appData.domains = appData.domains.filter(domain => domain !== d);
       if (appData.active_domain === d) {
         appData.active_domain = appData.domains[0] || '';
@@ -424,10 +537,10 @@
       navigator.clipboard.writeText(txt).then(() => {
         if (isMain) {
           const st = document.getElementById('status');
-          st.textContent = "Copied to clipboard!";
+          st.textContent = getTranslation("msg_copied_clipboard");
           st.style.color = '#f89e24';
         } else {
-          alert('Copied: ' + txt);
+          alert(getTranslation("alert_copied").replace("{text}", txt));
         }
       });
     }
