@@ -1,5 +1,7 @@
 # Dot Variant Generator
 
+**[Live Deployment](https://neverlolser.github.io/xdot-xgenerator/)**
+
 Dot Variant Generator is a serverless, simple yet powerful web application to generate unique email dot variants (such as `john.doe@gmail.com`, `j.oh.n.d.o.e@gmail.com`).
 
 ## Features
